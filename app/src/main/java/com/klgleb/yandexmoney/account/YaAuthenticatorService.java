@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 
 /**
+ * Service for YaAuthenticator
+ *
  * Created by klgleb on 21.11.15.
  */
 public class YaAuthenticatorService extends Service{

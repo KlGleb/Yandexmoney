@@ -1,20 +1,15 @@
 package com.klgleb.yandexmoney.db;
 
-import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
-import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
-
-import com.klgleb.yandexmoney.db.AccountsDBHelper;
 
 public class AccountContentProvider extends ContentProvider {
 
@@ -54,12 +49,6 @@ public class AccountContentProvider extends ContentProvider {
     private static final UriMatcher uriMatcher;
     public static final String TAG = "AccountContentProvider";
 
-    private static ProviderInfo getProviderInfo(Context context, Class<? extends ContentProvider> provider, int flags)
-            throws PackageManager.NameNotFoundException {
-        return context.getPackageManager()
-                .getProviderInfo(new ComponentName(context.getPackageName(), provider.getName()), flags);
-    }
-
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(AUTHORITY, CARDS_PATH, URI_CARDS);
@@ -80,7 +69,7 @@ public class AccountContentProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
 
         String tableName = getTableName(uri);
@@ -90,25 +79,28 @@ public class AccountContentProvider extends ContentProvider {
         Cursor cursor = db.query(tableName, projection, selection,
                 selectionArgs, null, null, sortOrder);
 
-        cursor.setNotificationUri(getContext().getContentResolver(),
-                uri);
+        if (getContentResolver() != null) {
+            cursor.setNotificationUri(getContentResolver(), uri);
+        }
 
         return cursor;
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
         String tableName = getTableName(uri);
 
         db = dbHelper.getWritableDatabase();
         int cnt = db.delete(tableName, selection, selectionArgs);
-        getContext().getContentResolver().notifyChange(uri, null);
+        if (getContentResolver()!= null) {
+            getContentResolver().notifyChange(uri, null);
+        }
         return cnt;
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         switch (uriMatcher.match(uri)) {
             case URI_ACCOUNT:
                 return ACCOUNT_CONTENT_TYPE;
@@ -122,19 +114,24 @@ public class AccountContentProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
 
         Log.d(TAG, "insert");
         db = dbHelper.getWritableDatabase();
 
-        ContentResolver contentResolver = getContext().getContentResolver();
+
+        ContentResolver contentResolver = getContentResolver();
+
         Uri res = null;
 
         switch (uriMatcher.match(uri)) {
             case URI_ACCOUNT:
                 db.execSQL(String.format("DELETE FROM %s", AccountsDBHelper.TABLE_ACCOUNT));
                 db.insert(AccountsDBHelper.TABLE_ACCOUNT, null, values);
-                contentResolver.notifyChange(ACCOUNT_CONTENT_URI, null);
+
+                if (contentResolver != null) {
+                    contentResolver.notifyChange(ACCOUNT_CONTENT_URI, null);
+                }
 
                 res = ACCOUNT_CONTENT_URI;
 
@@ -142,7 +139,10 @@ public class AccountContentProvider extends ContentProvider {
             case URI_CARDS:
 
                 db.insert(AccountsDBHelper.TABLE_ACCOUNT, null, values);
-                contentResolver.notifyChange(CARDS_CONTENT_URI, null);
+                if (contentResolver != null) {
+
+                    contentResolver.notifyChange(CARDS_CONTENT_URI, null);
+                }
 
                 res = CARDS_CONTENT_URI;
                 break;
@@ -159,21 +159,25 @@ public class AccountContentProvider extends ContentProvider {
 
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection,
+    public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         String tableName = getTableName(uri);
         db = dbHelper.getWritableDatabase();
 
-        ContentResolver contentResolver = getContext().getContentResolver();
+        ContentResolver contentResolver = getContentResolver();
 
         int count = db.update(tableName, values, selection, selectionArgs);
-        contentResolver.notifyChange(uri, null);
+
+        if (contentResolver != null) {
+            contentResolver.notifyChange(uri, null);
+        }
+
         return count;
 
     }
 
     private String getTableName(Uri uri) {
-        String tableName = "";
+        String tableName;
 
         switch (uriMatcher.match(uri)) {
             case URI_ACCOUNT:
@@ -187,5 +191,15 @@ public class AccountContentProvider extends ContentProvider {
         }
 
         return tableName;
+    }
+
+    private ContentResolver getContentResolver() {
+        Context context = getContext();
+        ContentResolver contentResolver = null;
+        if (context != null) {
+            contentResolver = context.getContentResolver();
+        }
+
+        return contentResolver;
     }
 }

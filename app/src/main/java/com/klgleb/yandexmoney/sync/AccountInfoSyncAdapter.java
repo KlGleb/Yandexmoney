@@ -25,6 +25,8 @@ import retrofit.Retrofit;
 
 
 /**
+ * SyncAdapter для синхронизации данных аккаунта яндекс-денег
+ *
  * Created by klgleb on 23.11.15.
  */
 public class AccountInfoSyncAdapter extends AbstractThreadedSyncAdapter {

@@ -10,6 +10,8 @@ import retrofit.http.Header;
 import retrofit.http.Query;
 
 /**
+ * Retrofit api class
+ *
  * Created by klgleb on 20.11.15.
  */
 public interface YaMoneyApi {

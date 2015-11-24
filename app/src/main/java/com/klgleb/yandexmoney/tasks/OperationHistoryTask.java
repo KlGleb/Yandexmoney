@@ -31,7 +31,7 @@ public class OperationHistoryTask extends ApiBaseTask<OperationHistory> {
         Call<OperationHistory> resp = apiService.getOperationHistory("Bearer " + accessToken);
 
 
-        Response<OperationHistory> execute = null;
+        Response<OperationHistory> execute;
         try {
             execute = resp.execute();
             return execute.body();
@@ -44,6 +44,5 @@ public class OperationHistoryTask extends ApiBaseTask<OperationHistory> {
 
     @Override
     public void cacheData(OperationHistory data) {
-        return;
     }
 }

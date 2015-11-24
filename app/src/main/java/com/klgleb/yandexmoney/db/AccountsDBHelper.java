@@ -2,10 +2,11 @@ package com.klgleb.yandexmoney.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.transition.ChangeTransform;
 import android.util.Log;
 
 /**
+ * Helper для таблиц, в которых хранятся данные аккаунта
+ *
  * Created by klgleb on 27.08.15.
  */
 public class AccountsDBHelper extends MySQLiteOpenHelper {

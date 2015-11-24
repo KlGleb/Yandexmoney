@@ -14,7 +14,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 /**
- * Getting a list of hotels from server
+ * Task для получения accessToken
  * <p/>
  * Created by klgleb on 02.11.15.
  */
@@ -46,7 +46,7 @@ public class GetAccessTokenTask extends BaseTask<AccessTokenModel> {
         YaMoneyApi api =  restAdapter.create(YaMoneyApi.class);
 
         Call<AccessTokenModel> accessToken = api.getAccessToken(code, clientId, grantType, redirectUri);
-        Response<AccessTokenModel> execute = null;
+        Response<AccessTokenModel> execute;
         try {
             execute = accessToken.execute();
             return execute.body();
@@ -60,6 +60,5 @@ public class GetAccessTokenTask extends BaseTask<AccessTokenModel> {
 
     @Override
     public void cacheData(AccessTokenModel data) {
-        return;
     }
 }

@@ -9,19 +9,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.klgleb.yandexmoney.LoginActivity;
 import com.klgleb.yandexmoney.LoginActivity_;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
 
 /**
+ * Authenticator для аккаунта яндекс-денег
+ *
  * Created by klgleb on 20.11.15.
  */
 public class YaAuthenticator extends AbstractAccountAuthenticator {
 
-    public static final String TAG = "YaAuthenticator";
     public static final String CLIENT_ID = "1EF9B6D1713878ED1FDC348956DA4CC44B059B67AF81126C0C15ADE0CC28BB2F";
     public static final String SERVER_URL = "https://money.yandex.ru";
     public static final String REDIRECT_URI = "http://hello200-a.akamaihd.net/redirect_uri";

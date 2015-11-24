@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 
 /**
+ * Service for AccountInfoSyncAdapter
+ *
  * Created by klgleb on 23.11.15.
  */
 
